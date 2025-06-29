@@ -34,4 +34,6 @@ router.get('/me', auth('zakatDonor', 'zakatReciver'), userController.getMe)
 //   userController.changeStatus,
 // )
 
+router.get('/verify-email/:token', userController.verifyEmail)
+
 export const UserRoutes = router

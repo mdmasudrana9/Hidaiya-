@@ -15,7 +15,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
 
-        'You are not authorized to access this route',
+        'You are not authorized to access this route for !token',
       )
     }
 
@@ -26,17 +26,18 @@ const auth = (...requiredRoles: TUserRole[]) => {
     } catch (error) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        'You are not authorized to access this route',
+        'You are not authorized to access this route decoded',
       )
     }
 
-    const { role, email, iat } = decoded
+    const { role, userEmail, iat } = decoded
     //if the user role is not in the required roles
     // checking if the user is exist
-    const user = await User.isUserExistsByCustomId(email)
+    console.log('role :>> ', role, 'email :>> ', userEmail, 'iat :>> ', iat)
+    const user = await User.isUserExistsByCustomId(userEmail)
 
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !')
+      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found  user!')
     }
     // checking if the user is already deleted
 
@@ -66,7 +67,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        'You are not authorized to access this route',
+        'You are not authorized to access this route role',
       )
     }
     req.user = decoded as JwtPayload

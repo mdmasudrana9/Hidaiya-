@@ -3,6 +3,8 @@ import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
 import { userService } from './user.service'
 import AppError from '../../errors/AppError'
+import { Request } from 'express'
+import { User } from './user.model'
 
 const createZakatDonor = catchAsync(async (req, res, next) => {
   const { password, donor: donorData } = req.body
@@ -28,6 +30,31 @@ const createZakatReciver = catchAsync(async (req, res) => {
     success: true,
     message: 'Faculty is created successfully',
     data: result,
+  })
+})
+const verifyEmail = catchAsync(async (req, res) => {
+  const { token } = req.params
+  console.log('token :>> ', token)
+
+  const user = await User.findOne({ verificationToken: token })
+  console.log('user :>> ', user)
+  if (!user) {
+    res.status(400).json({ success: false, message: 'Invalid token' })
+    return
+  }
+
+  // user.isVerified = true
+  // user.verificationToken = undefined
+
+  await User.updateOne(
+    { _id: user._id },
+    { $set: { isVerified: true }, $unset: { verificationToken: '' } },
+  )
+  //console.log('user :>> ', user)
+  res.status(200).json({
+    success: true,
+    message: 'Email verified successfully',
+    redirectTo: `/dashboard/${user.role}`,
   })
 })
 
@@ -63,9 +90,12 @@ const getMe = catchAsync(async (req, res) => {
   })
 })
 
+// user.controller.ts
+
 export const userController = {
   createZakatDonor,
   createZakatReciver,
+  verifyEmail,
   //createAdmin,
   getMe,
 }

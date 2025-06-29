@@ -9,6 +9,8 @@ export interface TUser {
   role: 'zakatDonor' | 'admin' | 'zakatReciver' | 'superAdmin'
   status: 'in-progress' | 'blocked'
   isDeleted: boolean
+  isVerified: boolean
+  verificationToken?: string
 }
 
 export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE]

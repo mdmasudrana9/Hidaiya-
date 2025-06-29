@@ -15,6 +15,13 @@ const userSchema = new Schema<TUser>(
       require: true,
       unique: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
     password: {
       type: String,
       require: true,
